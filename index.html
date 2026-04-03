@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arshaka's Birthday 🚂</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === RESET & GLOBAL STYLES === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #111;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+        body.open { overflow: auto; }
+
+        #app {
+            width: 100%; max-width: 414px; background: #fff;
+            position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5); overflow-x: hidden;
+        }
+
+        .section-wrap {
+            position: relative; background-size: cover; background-position: center;
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; padding: 40px 0; 
+        }
+
+        /* GANTI URL BACKGROUND DI SINI NANTI */
+        .bg-1 { background-image: url('./assets/bg1.jpg'); background-color: #81d4fa; }
+        .bg-2 { background-image: url('./assets/bg2.jpg'); background-color: #fAD7A1; } 
+        .bg-3 { background-image: url('./assets/bg3.jpg'); background-color: #aed6f1; }
+        .bg-4 { background-image: url('./assets/bg4.jpg'); background-color: #a3e4d7; }
+        .bg-5 { background-image: url('./assets/bg5.jpg'); background-color: #f5b7b1; }
+        .bg-6 { background-image: url('./assets/bg6.jpg'); background-color: #d7bde2; }
+        .bg-7 { background-image: url('./assets/bg7.jpg'); background-color: #ffccbc; }
+
+        #cover {
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 414px; height: 100%;
+            background: #b3e5fc; display: flex; justify-content: center;
+            align-items: center; flex-direction: column; z-index: 9999;
+            text-align: center; transition: opacity 1s ease, visibility 1s;
+        }
+        #cover.hidden { opacity: 0; visibility: hidden; }
+
+        .card {
+            background: rgba(255, 255, 255, 0.85); border-radius: 20px;
+            padding: 30px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px); width: 90%; max-width: 350px;
+            text-align: center; position: relative; z-index: 5;
+        }
+
+        h1.title {
+            font-family: 'Grand Hotel', cursive; font-size: 3.5rem;
+            color: #1a4b77; text-shadow: 2px 2px 4px rgba(255,255,255,0.8); line-height: 1.2;
+        }
+        h2.subtitle {
+            font-family: 'Grand Hotel', cursive; color: #d35400;
+            font-size: 2.2rem; margin-bottom: 10px;
+        }
+        .card p { color: #444; line-height: 1.6; margin-bottom: 8px; font-size: 0.95rem; }
+
+        .quote-text { font-style: italic; font-size: 1rem !important; color: #333 !important; line-height: 1.8 !important; }
+        .quote-love { font-weight: bold; color: #e53935 !important; margin-top: 15px !important; font-size: 1.1rem !important; font-style: normal; }
+
+        .btn {
+            margin-top: 15px; padding: 12px 25px; border: none; border-radius: 25px;
+            background: #e53935; color: white; font-size: 1rem; font-weight: bold;
+            font-family: 'Poppins', sans-serif; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.4); display: inline-block; text-decoration: none;
+        }
+
+        input[type="text"], textarea {
+            width: 100%; padding: 10px; margin: 8px 0; border-radius: 10px;
+            border: 1px solid #ccc; font-family: 'Poppins', sans-serif;
+        }
+        .bank-box { background: #f4f9ff; padding: 15px; border-radius: 15px; margin-top: 10px; border: 1px dashed #1a4b77; }
+        .copy-btn { background: #27ae60; color: white; border: none; padding: 5px 15px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; margin-top: 8px; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .grid img { width: 100%; height: 130px; object-fit: cover; border-radius: 12px; }
+
+        .train-wrap { height: 100px; background: #ffffff; position: relative; overflow: hidden; border-top: 4px solid #4fc3f7; border-bottom: 8px solid #689F38; }
+        .train { position: absolute; bottom: 0px; left: -250px; width: 160px; animation: trainMove 6s linear infinite; }
+        @keyframes trainMove { from { left: -250px; } to { left: 110%; } }
+
+        .fade { opacity: 0; transform: translateY(40px); transition: 0.8s ease-out; }
+        .fade.show { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+
+        <div id="cover">
+            <h2 style="font-family: 'Poppins', sans-serif; font-size: 1.2rem; color: #1565c0;">Birthday Invitation</h2>
+            <h1 class="title" style="margin: 10px 0 20px;">Arshaka 🚂</h1>
+            
+            <div style="margin-bottom: 25px; color: #1a4b77;">
+                <p style="font-size: 1rem; margin-bottom: 5px; font-weight: 600;">Dear,</p>
+                <p id="guest-name" style="font-size: 1.5rem; color: #d35400; font-weight: 700; background: rgba(255,255,255,0.7); padding: 5px 20px; border-radius: 15px; display: inline-block;">
+                    Tamu Spesial
+                </p>
+            </div>
+
+            <button class="btn" onclick="openInvite()">Buka Undangan</button>
+        </div>
+
+        <div class="section-wrap bg-1">
+            <div class="card fade">
+                <h1 class="title">Arshaka's Birthday</h1>
+                <p style="font-size: 1.2rem; font-weight: 600; color: #1a4b77; margin-top: 10px;">All aboard! 🚂</p>
+            </div>
+        </div>
+
+        <div class="section-wrap bg-2">
+            <div class="card fade">
+                <p class="quote-text">
+                    “Seperti mutiara terindah di dasar lautan, bagi kami kamu adalah harta yang tak ternilai harganya. Semoga dengan bertambah usiamu, semakin bertambah rezeki, diberkahi kesehatan dan umur yang bermanfaat serta kelak menjadi anak yang sholeh."
+                </p>
+                <p class="quote-love">❤️ Kami Sangat Menyayangimu ❤️</p>
+            </div>
+        </div>
+
+        <div class="section-wrap bg-3" style="justify-content: flex-start; padding-top: 20vh;">
+            <div class="card fade">
+                <img src="https://picsum.photos/150" alt="Arshaka" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid #fff; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <h2 class="subtitle" style="margin-bottom: 0;">Arshaka is turning 3!</h2>
+            </div>
+        </div>
+
+        <div class="section-wrap bg-4">
+            <div class="card fade">
+                <h2 class="subtitle">Event Detail</h2>
+                <p>📅 <strong>Minggu, 10 Mei 2026</strong></p>
+                <p>⏰ <strong>10:00 WIB - Selesai</strong></p>
+                <p>📍 <strong>KFC Sunter</strong><br><small>Jakarta Utara</small></p>
+                <a href="#" class="btn" style="background: #2980b9; margin-top: 15px;">🗺️ Buka Peta</a>
+            </div>
+        </div>
+
+        <div class="section-wrap bg-5">
+            <div class="card fade">
+                <h2 class="subtitle">Our Memories</h2>
+                <div class="grid">
+                    <img src="https://picsum.photos/200?1" alt="Foto 1">
+                    <img src="https://picsum.photos/200?2" alt="Foto 2">
+                    <img src="https://picsum.photos/200?3" alt="Foto 3">
+                    <img src="https://picsum.photos/200?4" alt="Foto 4">
+                </div>
+            </div>
+        </div>
+
+        <div class="section-wrap bg-6">
+            <div class="card fade">
+                <h2 class="subtitle">Amplop Digital</h2>
+                <p>Bagi keluarga dan sahabat yang ingin memberikan kado, dapat melalui rekening di bawah ini:</p>
+                <div class="bank-box">
+                    <p><strong>BCA</strong></p>
+                    <p id="norek-1" style="font-size: 1.2rem; font-weight: bold; color: #1a4b77;">1234567890</p>
+                    <p>A.n Orang Tua</p>
+                    <button class="copy-btn" onclick="copyText('norek-1')">📋 Salin Rekening</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-wrap bg-7">
+            <div class="card fade" style="margin-bottom: 20px;">
+                <h2 class="subtitle">Ucapkan Sesuatu</h2>
+                <form id="formUcapan">
+                    <input type="text" id="namaPengirim" placeholder="Nama Anda" required>
+                    <textarea id="pesanUcapan" rows="3" placeholder="Tulis ucapan & doa untuk Arshaka..." required></textarea>
+                    <button type="submit" class="btn" style="width: 100%;">Kirim Ucapan</button>
+                </form>
+            </div>
+
+            <div class="card fade">
+                <h1 class="title" style="font-size: 2.5rem; color: #d35400;">Aku tunggu kedatanganmu!</h1>
+                <p style="font-weight: bold; margin-top: 10px;">Terima Kasih,<br>Keluarga Arshaka</p>
+            </div>
+        </div>
+
+        <div class="train-wrap">
+            <img class="train" src="https://pngimg.com/uploads/train/train_PNG101.png" alt="Kereta Thomas">
+        </div>
+
+    </div>
+
+    <script>
+        // 1. MENGAMBIL NAMA DARI URL
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const guestName = urlParams.get('to');
+            if (guestName) {
+                document.getElementById('guest-name').innerText = guestName;
+            }
+        });
+
+        // 2. LOGIKA BUKA UNDANGAN
+        function openInvite() {
+            document.getElementById("cover").classList.add("hidden");
+            document.body.classList.add("open"); 
+        }
+
+        // 3. LOGIKA SALIN REKENING
+        function copyText(elementId) {
+            var text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Nomor rekening berhasil disalin: " + text);
+            });
+        }
+
+        // 4. MENGIRIM FORM UCAPAN (Bisa kamu ganti nanti url webhook-nya)
+        document.getElementById('formUcapan').addEventListener('submit', async function(e) {
+            e.preventDefault(); 
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "Mengirim..."; btn.disabled = true;
+
+            // Nanti kamu bisa masukkan URL n8n/Supabase di sini
+            setTimeout(() => {
+                alert('Terima kasih! Ucapan berhasil dikirim (Ini masih demo ya).');
+                document.getElementById('formUcapan').reset(); 
+                btn.innerHTML = originalText; btn.disabled = false;
+            }, 1000);
+        });
+
+        // 5. ANIMASI FADE SCROLL
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add("show");
+                    entry.target.querySelectorAll("img").forEach((img, i) => {
+                        setTimeout(() => img.classList.add("show"), i * 150);
+                    });
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll(".fade").forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
