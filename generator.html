@@ -64,7 +64,7 @@
         <label>Gaya Pesan WhatsApp</label>
         <select id="msgTone">
             <option value="friendly">🎈 Anak-anak (Untuk teman-teman Arshaka)</option>
-            <option value="semiformal">👔 Keluarga / Dewasa (Untuk Om, Tante, Kerabat)</option>
+            <option value="semiformal">👔 Keluarga / Dewasa (Untuk Uncle, Aunty)</option>
         </select>
 
         <button class="btn btn-primary" onclick="generateLink()">Buat Link & Pesan</button>
@@ -122,7 +122,7 @@
             if (msgTone === "friendly") {
                 waTemplate = `Haii ${namaSapaan}! 👋\n\nJangan lupa datang ke acara ulang tahun Arshaka yang ke-3 yaa! 🚂🎈\n\nBakal banyak keseruan lho, yuk cek detail waktu dan tempatnya di link undangan ini:\n${finalUrl}\n\nKehadiranmu pasti bikin acara makin seru. Ditunggu kedatangannya yaa! 🥰\n\nSalam manis,\nArshaka`;
             } else {
-                waTemplate = `Halo Om / Tante ${namaSapaan}! 👋\n\nArshaka ulang tahun yang ke-3 loh... 🚂🎈\n\nArshaka bermaksud mengundang Om / Tante untuk turut hadir memeriahkan hari bahagia Arshaka.\n\nUntuk detail waktu dan tempat acara, bisa dilihat melalui link undangan berikut ya:\n${finalUrl}\n\nKehadiran dan doa restu dari Om / Tante pastinya akan sangat berarti buat Arshaka. Sampai jumpa di acara nanti! 🥰\n\nSalam hangat,\nArshaka Zaid Rachman`;
+                waTemplate = `Halo Uncle / Aunty ${namaSapaan}! 👋\n\nArshaka ulang tahun yang ke-3 loh... 🚂🎈\n\nArshaka bermaksud mengundang Uncle / Aunty untuk turut hadir memeriahkan hari bahagia Arshaka.\n\nUntuk detail waktu dan tempat acara, bisa dilihat melalui link undangan berikut ya:\n${finalUrl}\n\nKehadiran dan doa restu dari Uncle / Aunty pastinya akan sangat berarti buat Arshaka. Sampai jumpa di acara nanti! 🥰\n\nSalam hangat,\nArshaka`;
             }
 
             document.getElementById('finalLink').value = finalUrl;
