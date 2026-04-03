@@ -8,53 +8,30 @@
     <style>
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { 
-            background-color: #f4f7f6; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0;
-            padding: 20px;
+            background-color: #f4f7f6; display: flex; justify-content: center; 
+            align-items: center; min-height: 100vh; margin: 0; padding: 20px;
         }
         .container {
-            background: white; 
-            padding: 30px; 
-            border-radius: 15px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            width: 100%; 
-            max-width: 500px;
+            background: white; padding: 30px; border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 500px;
         }
         h2 { color: #1a4b77; margin-top: 0; text-align: center; }
         label { font-weight: 600; font-size: 0.9rem; color: #444; display: block; margin-top: 15px; margin-bottom: 5px; }
         
-        input, textarea {
-            width: 100%; 
-            padding: 12px; 
-            border: 1px solid #ccc; 
-            border-radius: 8px; 
-            font-size: 1rem;
+        input, textarea, select {
+            width: 100%; padding: 12px; border: 1px solid #ccc; 
+            border-radius: 8px; font-size: 1rem;
         }
-        input:focus, textarea:focus { border-color: #1a4b77; outline: none; }
+        input:focus, textarea:focus, select:focus { border-color: #1a4b77; outline: none; }
         
         .result-box {
-            background: #eef5ff; 
-            padding: 15px; 
-            border-radius: 8px; 
-            border: 1px dashed #1a4b77; 
-            margin-top: 20px;
-            display: none; /* Sembunyi sebelum nama diisi */
+            background: #eef5ff; padding: 15px; border-radius: 8px; 
+            border: 1px dashed #1a4b77; margin-top: 20px; display: none; 
         }
         
         .btn {
-            width: 100%; 
-            padding: 12px; 
-            border: none; 
-            border-radius: 8px; 
-            font-size: 1rem; 
-            font-weight: 600; 
-            cursor: pointer; 
-            margin-top: 10px;
-            transition: 0.3s;
+            width: 100%; padding: 12px; border: none; border-radius: 8px; 
+            font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px; transition: 0.3s;
         }
         .btn-primary { background: #1a4b77; color: white; margin-top: 20px; }
         .btn-primary:hover { background: #123455; }
@@ -65,6 +42,9 @@
         .btn-outline { background: transparent; color: #1a4b77; border: 2px solid #1a4b77; }
         .btn-outline:hover { background: #f0f7ff; }
 
+        .btn-test { background: #2980b9; color: white; margin-top: 10px;}
+        .btn-test:hover { background: #21618c; }
+
         .helper-text { font-size: 0.8rem; color: #777; margin-top: 5px; }
     </style>
 </head>
@@ -72,55 +52,88 @@
 
     <div class="container">
         <h2>🚂 Generator Link Undangan</h2>
-        <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px;">Buat link khusus untuk setiap tamu dengan mudah.</p>
+        <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px;">Buat link & pesan otomatis untuk tamu.</p>
 
-        <label>Domain Vercel Anda (URL Utama)</label>
-        <input type="text" id="baseUrl" value="https://arshakabirthday.vercel.app" placeholder="https://...">
-        
+        <label>Domain / URL Utama (Otomatis Terdeteksi)</label>
+        <input type="text" id="baseUrl" readonly style="background-color: #e9ecef; color: #555;">
+        <div class="helper-text">*URL ini menyesuaikan otomatis (Lokal vs Vercel).</div>
+
         <label>Nama Tamu</label>
-        <input type="text" id="guestName" placeholder="Contoh: Kalandra / Bpk. Budi">
-        <div class="helper-text">*Huruf besar/kecil dan spasi akan otomatis disesuaikan.</div>
+        <input type="text" id="guestName" placeholder="Contoh: Kalandra / Budi / Rina">
+        <div class="helper-text">*Spasi akan otomatis disesuaikan di link.</div>
 
-        <button class="btn btn-primary" onclick="generateLink()">Buat Link Undangan</button>
+        <label>Gaya Pesan WhatsApp</label>
+        <select id="msgTone">
+            <option value="friendly">🎈 Anak-anak (Untuk teman-teman Arshaka)</option>
+            <option value="semiformal">👔 Keluarga / Dewasa (Untuk Om, Tante, Kerabat)</option>
+        </select>
+
+        <button class="btn btn-primary" onclick="generateLink()">Buat Link & Pesan</button>
 
         <div class="result-box" id="resultArea">
             <label>Link Khusus Tamu:</label>
             <input type="text" id="finalLink" readonly>
+            
+            <button class="btn btn-test" onclick="testLink()">🌐 Buka & Tes Link</button>
             <button class="btn btn-outline" onclick="copyOnlyLink()">🔗 Salin Link Saja</button>
 
-            <!-- <label>Pesan Broadcast WhatsApp:</label>
-            <textarea id="waMessage" rows="6" readonly></textarea>
-            <button class="btn btn-success" onclick="copyWaMessage()">💬 Salin Pesan WA</button> -->
+            <label>Pesan Broadcast WhatsApp:</label>
+            <textarea id="waMessage" rows="12" readonly></textarea>
+            <button class="btn btn-success" onclick="copyWaMessage()">💬 Salin Pesan WA</button>
         </div>
     </div>
 
     <script>
+        // OTOMATIS MENGISI URL SAAT HALAMAN DIBUKA
+        window.onload = function() {
+            let currentDomain = window.location.origin; // Mendapatkan asal domain (cth: http://127.0.0.1:5500 atau https://domain.vercel.app)
+            let baseInput = document.getElementById("baseUrl");
+            
+            // Jika dibuka di lokal (Live Server)
+            if (currentDomain.includes("127.0.0.1") || currentDomain.includes("localhost")) {
+                baseInput.value = currentDomain + "/index.html";
+            } else {
+                // Jika dibuka di Vercel
+                baseInput.value = currentDomain;
+            }
+        };
+
         function generateLink() {
             let baseUrl = document.getElementById('baseUrl').value;
             let guestName = document.getElementById('guestName').value;
+            let msgTone = document.getElementById('msgTone').value;
 
-            // Validasi sederhana
             if(guestName.trim() === "") {
                 alert("Tolong masukkan nama tamu terlebih dahulu!");
                 return;
             }
 
-            // Memastikan URL berakhiran slash atau tidak agar formatnya tidak rusak
             if(baseUrl.endsWith('/')) {
                 baseUrl = baseUrl.slice(0, -1);
             }
+            
+            let connector = baseUrl.includes('.html') ? '?' : '/?';
 
-            // Encode nama (mengubah spasi menjadi %20 agar aman di link)
             let encodedName = encodeURIComponent(guestName.trim());
-            let finalUrl = `${baseUrl}/?to=${encodedName}`;
+            let finalUrl = `${baseUrl}${connector}to=${encodedName}`;
 
-            // Template Pesan WhatsApp
-            let waTemplate = `Kepada Yth. ${guestName.trim()},\n\nTanpa mengurangi rasa hormat, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir dalam acara Ulang Tahun anak kami, Arshaka yang ke-3.\n\nBerikut link undangan untuk detail acara:\n${finalUrl}\n\nMerupakan suatu kebahagiaan bagi kami apabila Anda berkenan hadir dan memberikan doa restu.\n\nTerima Kasih,\nKeluarga Arshaka`;
+            let waTemplate = "";
+            let namaSapaan = guestName.trim();
 
-            // Tampilkan hasil
+            if (msgTone === "friendly") {
+                waTemplate = `Haii ${namaSapaan}! 👋\n\nJangan lupa datang ke acara ulang tahun Arshaka yang ke-3 yaa! 🚂🎈\n\nBakal banyak keseruan lho, yuk cek detail waktu dan tempatnya di link undangan ini:\n${finalUrl}\n\nKehadiranmu pasti bikin acara makin seru. Ditunggu kedatangannya yaa! 🥰\n\nSalam manis,\nArshaka`;
+            } else {
+                waTemplate = `Halo Om / Tante ${namaSapaan}! 👋\n\nArshaka ulang tahun yang ke-3 loh... 🚂🎈\n\nArshaka bermaksud mengundang Om / Tante untuk turut hadir memeriahkan hari bahagia Arshaka.\n\nUntuk detail waktu dan tempat acara, bisa dilihat melalui link undangan berikut ya:\n${finalUrl}\n\nKehadiran dan doa restu dari Om / Tante pastinya akan sangat berarti buat Arshaka. Sampai jumpa di acara nanti! 🥰\n\nSalam hangat,\nArshaka Zaid Rachman`;
+            }
+
             document.getElementById('finalLink').value = finalUrl;
             document.getElementById('waMessage').value = waTemplate;
             document.getElementById('resultArea').style.display = 'block';
+        }
+
+        function testLink() {
+            let finalUrl = document.getElementById('finalLink').value;
+            if(finalUrl) { window.open(finalUrl, '_blank'); }
         }
 
         function copyOnlyLink() {
