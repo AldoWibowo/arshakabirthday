@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Undangan Arshaka</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { 
+            background-color: #f4f7f6; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 500px;
+        }
+        h2 { color: #1a4b77; margin-top: 0; text-align: center; }
+        label { font-weight: 600; font-size: 0.9rem; color: #444; display: block; margin-top: 15px; margin-bottom: 5px; }
+        
+        input, textarea {
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            font-size: 1rem;
+        }
+        input:focus, textarea:focus { border-color: #1a4b77; outline: none; }
+        
+        .result-box {
+            background: #eef5ff; 
+            padding: 15px; 
+            border-radius: 8px; 
+            border: 1px dashed #1a4b77; 
+            margin-top: 20px;
+            display: none; /* Sembunyi sebelum nama diisi */
+        }
+        
+        .btn {
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn-primary { background: #1a4b77; color: white; margin-top: 20px; }
+        .btn-primary:hover { background: #123455; }
+        
+        .btn-success { background: #25D366; color: white; display: flex; align-items: center; justify-content: center; gap: 8px;}
+        .btn-success:hover { background: #1ebc5a; }
+        
+        .btn-outline { background: transparent; color: #1a4b77; border: 2px solid #1a4b77; }
+        .btn-outline:hover { background: #f0f7ff; }
+
+        .helper-text { font-size: 0.8rem; color: #777; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🚂 Generator Link Undangan</h2>
+        <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px;">Buat link khusus untuk setiap tamu dengan mudah.</p>
+
+        <label>Domain Vercel Anda (URL Utama)</label>
+        <input type="text" id="baseUrl" value="https://domain-vercel-kamu.vercel.app" placeholder="https://...">
+        
+        <label>Nama Tamu</label>
+        <input type="text" id="guestName" placeholder="Contoh: Kalandra / Bpk. Budi">
+        <div class="helper-text">*Huruf besar/kecil dan spasi akan otomatis disesuaikan.</div>
+
+        <button class="btn btn-primary" onclick="generateLink()">Buat Link Undangan</button>
+
+        <div class="result-box" id="resultArea">
+            <label>Link Khusus Tamu:</label>
+            <input type="text" id="finalLink" readonly>
+            <button class="btn btn-outline" onclick="copyOnlyLink()">🔗 Salin Link Saja</button>
+
+            <label>Pesan Broadcast WhatsApp:</label>
+            <textarea id="waMessage" rows="6" readonly></textarea>
+            <button class="btn btn-success" onclick="copyWaMessage()">💬 Salin Pesan WA</button>
+        </div>
+    </div>
+
+    <script>
+        function generateLink() {
+            let baseUrl = document.getElementById('baseUrl').value;
+            let guestName = document.getElementById('guestName').value;
+
+            // Validasi sederhana
+            if(guestName.trim() === "") {
+                alert("Tolong masukkan nama tamu terlebih dahulu!");
+                return;
+            }
+
+            // Memastikan URL berakhiran slash atau tidak agar formatnya tidak rusak
+            if(baseUrl.endsWith('/')) {
+                baseUrl = baseUrl.slice(0, -1);
+            }
+
+            // Encode nama (mengubah spasi menjadi %20 agar aman di link)
+            let encodedName = encodeURIComponent(guestName.trim());
+            let finalUrl = `${baseUrl}/?to=${encodedName}`;
+
+            // Template Pesan WhatsApp
+            let waTemplate = `Kepada Yth. ${guestName.trim()},\n\nTanpa mengurangi rasa hormat, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir dalam acara Ulang Tahun anak kami, Arshaka yang ke-3.\n\nBerikut link undangan untuk detail acara:\n${finalUrl}\n\nMerupakan suatu kebahagiaan bagi kami apabila Anda berkenan hadir dan memberikan doa restu.\n\nTerima Kasih,\nKeluarga Arshaka`;
+
+            // Tampilkan hasil
+            document.getElementById('finalLink').value = finalUrl;
+            document.getElementById('waMessage').value = waTemplate;
+            document.getElementById('resultArea').style.display = 'block';
+        }
+
+        function copyOnlyLink() {
+            let copyText = document.getElementById("finalLink");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value).then(() => {
+                alert("Link berhasil disalin!");
+            });
+        }
+
+        function copyWaMessage() {
+            let copyText = document.getElementById("waMessage");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value).then(() => {
+                alert("Pesan WhatsApp berhasil disalin, tinggal Paste ke chat!");
+            });
+        }
+    </script>
+
+</body>
+</html>
