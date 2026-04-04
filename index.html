@@ -10,23 +10,18 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* Mengimpor Font More Sugar */
         @import url('https://fonts.cdnfonts.com/css/more-sugar');
 
-        /* === RESET & GLOBAL STYLES === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
 
         body { font-family: 'Poppins', sans-serif; background: #111; display: flex; justify-content: center; overflow: hidden; }
         body.open { overflow: auto; }
 
-        /* === MOBILE CONTAINER === */
         #app { width: 100%; max-width: 414px; background: #fff; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5); overflow-x: hidden; }
 
         .section-wrap { position: relative; background-size: cover; background-position: center; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 0; overflow: hidden; }
 
-        /* BACKGROUND ASSETS */
-        /* DI SINI PERUBAHANNYA: .svg diganti jadi .png */
         .bg-1 { background-image: url('./assets/bg1.png'); background-color: #81d4fa; }
         .bg-2 { background-image: url('./assets/background2.png'); background-color: #fAD7A1; } 
         .bg-3 { background-image: url('./assets/bg3.png'); background-color: #aed6f1; }
@@ -35,9 +30,6 @@
         .bg-6 { background-image: url('./assets/bg6.png'); background-color: #d7bde2; }
         .bg-7 { background-image: url('./assets/bg3.png'); background-color: #ffccbc; }
 
-        /* ======================================================= */
-        /* === KERETA MARQUEE ZIG-ZAG (1 KERETA, 5 SECTION) === */
-        /* ======================================================= */
         .section-train {
             position: absolute;
             bottom: 0;
@@ -57,7 +49,6 @@
             opacity: 0; 
         }
 
-        /* Karena ada 5 section, persentase animasi disesuaikan agar aktif 20% (8 detik dari 40 dtk) */
         @keyframes trainR2L {
             0% { opacity: 0; left: 120%; transform: scaleX(1); }
             1% { opacity: 1; left: 120%; transform: scaleX(1); }
@@ -74,7 +65,6 @@
             100% { opacity: 0; left: 120%; transform: scaleX(-1); }
         }
 
-        /* Urutan 5 Kereta (Total Loop: 40 detik) */
         .train-sec-1 img { animation: trainR2L 40s infinite linear; animation-delay: 0s; }
         .train-sec-2 img { animation: trainL2R 40s infinite linear; animation-delay: 8s; }
         .train-sec-3 img { animation: trainR2L 40s infinite linear; animation-delay: 16s; }
@@ -83,8 +73,42 @@
 
 
         /* === COVER PAGE === */
-        #cover { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 414px; height: 100%; background: url('./assets/mukazaid.png') no-repeat center/cover, #b3e5fc; display: flex; justify-content: center; align-items: center; flex-direction: column; z-index: 9999; text-align: center; transition: opacity 1s ease, visibility 1s; }
+        #cover { 
+            position: fixed; 
+            top: 0; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 100%; 
+            max-width: 414px; 
+            height: 100%; 
+            background-color: #b3e5fc;
+            z-index: 9999; 
+            transition: opacity 1s ease, visibility 1s; 
+            overflow: hidden; 
+        }
         #cover.hidden { opacity: 0; visibility: hidden; }
+
+        .cover-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            z-index: 0; 
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            flex-direction: column; 
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
 
         /* === CARDS & TYPOGRAPHY === */
         .card { background: rgba(255, 255, 255, 0.85); border-radius: 20px; padding: 30px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); backdrop-filter: blur(5px); width: 90%; max-width: 350px; text-align: center; position: relative; z-index: 5; }
@@ -168,17 +192,23 @@
     <div id="app">
 
         <div id="cover">
-            <h4 style="font-family: 'Poppins', sans-serif; font-size: 1.5rem; color: #1565c0;">Birthday Invitation</h4>
-            <h1 class="title" style="margin: 10px 0 20px;">Arshaka 🚂</h1>
-            
-            <div style="margin-bottom: 25px; color: #1a4b77;">
-                <p style="font-size: 1rem; margin-bottom: 5px; font-weight: 600;">Dear,</p>
-                <p id="guest-name" style="font-family: 'More Sugar', 'More Sugar Thin', cursive; font-size: 2.2rem; color: #d35400; background: rgba(255,255,255,0.7); padding: 5px 25px; border-radius: 15px; display: inline-block; line-height: 1.2;">
-                    Tamu Spesial
-                </p>
-            </div>
+            <video class="cover-video" autoplay loop muted playsinline>
+                <source src="./assets/bergerak.mp4" type="video/mp4">
+            </video>
 
-            <button id="openBtn" class="btn" onclick="openInvite()">Buka Undangan</button>
+            <div class="cover-content">
+                <h4 style="font-family: 'Poppins', sans-serif; font-size: 1.5rem; color: #1565c0;">Birthday Invitation</h4>
+                <h1 class="title" style="margin: 10px 0 20px;">Arshaka 🚂</h1>
+                
+                <div style="margin-bottom: 25px; color: #1a4b77;">
+                    <p style="font-size: 1rem; margin-bottom: 5px; font-weight: 600;">Dear,</p>
+                    <p id="guest-name" style="font-family: 'More Sugar', 'More Sugar Thin', cursive; font-size: 2.2rem; color: #d35400; background: rgba(255,255,255,0.7); padding: 5px 25px; border-radius: 15px; display: inline-block; line-height: 1.2;">
+                        Tamu Spesial
+                    </p>
+                </div>
+
+                <button id="openBtn" class="btn" onclick="openInvite()">Buka Undangan</button>
+            </div>
         </div>
 
         <div class="section-wrap bg-1">
@@ -287,7 +317,6 @@
     </div>
 
     <script>
-        // 1. UBAH NAMA TAMU & KUNCI FORM INPUT
         try {
             const urlParams = new URLSearchParams(window.location.search);
             const guestName = urlParams.get('to');
@@ -303,7 +332,6 @@
             console.error("Gagal membaca link URL: ", err);
         }
 
-        // 2. KONFIGURASI SUPABASE ASLI
         const SUPABASE_URL = 'https://vdzosmokdksoashrzsii.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_LSA1BJTuli1c5P4kHXAE3g_uaGYujnR';
         let supabaseClient = null;
@@ -319,7 +347,6 @@
             console.error("Gagal init Supabase:", error);
         }
 
-        // 3. LOGIKA UI (BUKA UNDANGAN DENGAN DELAY & MUSIK INTRO)
         const music = document.getElementById("bgMusic");
         const voiceIntro = document.getElementById("voiceIntro");
         const musicBtn = document.getElementById("musicBtn");
@@ -327,25 +354,21 @@
 
         function openInvite() {
             try {
-                // Ubah state tombol agar tidak diklik berkali-kali
                 if(openBtn) {
                     openBtn.disabled = true;
                     openBtn.innerHTML = "Tunggu sebentar... 🚂";
                 }
 
-                // Putar suara Arshaka terlebih dahulu
                 if(voiceIntro) {
                     voiceIntro.play().catch(error => console.log("Autoplay voice dicegah browser:", error));
                 }
 
-                // Tunggu 3 detik (3000ms) sebelum buka halaman utama
                 setTimeout(() => {
                     document.getElementById("cover").classList.add("hidden");
                     document.body.classList.add("open"); 
                     
                     if(musicBtn) musicBtn.style.display = "flex"; 
                     
-                    // Putar lagu Doraemon
                     if(music) {
                         music.play().catch(error => console.log("Autoplay lagu dicegah browser:", error));
                     }
@@ -373,7 +396,6 @@
             });
         }
 
-        // 4. LOGIKA LIGHTBOX (POP-UP FOTO GALERI)
         function openLightbox(src) {
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox').classList.add('show');
@@ -382,7 +404,6 @@
             document.getElementById('lightbox').classList.remove('show');
         }
 
-        // 5. FUNGSI DATABASE (BACA & TULIS)
         async function fetchMessages() {
             if (!supabaseClient) return;
             const board = document.getElementById('messageBoard');
@@ -452,7 +473,6 @@
             }
         });
 
-        // 6. ANIMASI FADE SCROLL & ANIMASI TANGGAL
         let hasCounted = false; 
 
         const observer = new IntersectionObserver((entries) => {

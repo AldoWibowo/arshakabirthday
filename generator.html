@@ -83,16 +83,13 @@
     </div>
 
     <script>
-        // OTOMATIS MENGISI URL SAAT HALAMAN DIBUKA
         window.onload = function() {
-            let currentDomain = window.location.origin; // Mendapatkan asal domain (cth: http://127.0.0.1:5500 atau https://domain.vercel.app)
+            let currentDomain = window.location.origin;
             let baseInput = document.getElementById("baseUrl");
             
-            // Jika dibuka di lokal (Live Server)
             if (currentDomain.includes("127.0.0.1") || currentDomain.includes("localhost")) {
                 baseInput.value = currentDomain + "/index.html";
             } else {
-                // Jika dibuka di Vercel
                 baseInput.value = currentDomain;
             }
         };
