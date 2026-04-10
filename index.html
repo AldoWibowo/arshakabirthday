@@ -9,6 +9,14 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <script>
+        (function() {
+            // Hapus theme lama biar ga nyangkut
+            localStorage.removeItem('theme_arshaka');
+            document.documentElement.classList.remove('dark-mode');
+        })();
+    </script>
+
     <style>
         @import url('https://fonts.cdnfonts.com/css/more-sugar');
 
@@ -16,26 +24,86 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
 
-        body { font-family: 'Poppins', sans-serif; background: #111; display: flex; justify-content: center; overflow: hidden; }
+        /* === VARIABEL WARNA (DAY MODE DEFAULT) === */
+        :root {
+            --bg-dark: #111;
+            --app-bg: #fff;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #444;
+            --text-titles: #1a4b77;
+            --shadow: rgba(0,0,0,0.5);
+            --btn-copy: #27ae60;
+            --border-bank: #1a4b77;
+            
+            /* Warna Background Overlay (Day) */
+            --bg1-overlay: #81d4fa;
+            --bg2-overlay: #fAD7A1;
+            --bg3-overlay: #aed6f1;
+            --bg4-overlay: #a3e4d7;
+            --bg5-overlay: #f5b7b1;
+            --bg6-overlay: #d7bde2;
+            --bg7-overlay: #ffccbc;
+        }
+
+        /* === VARIABEL WARNA (NIGHT MODE) === */
+        .dark-mode {
+            --bg-dark: #050509;
+            --app-bg: #111;
+            --card-bg: rgba(20, 20, 35, 0.85);
+            --text-main: #e0e0e0;
+            --text-titles: #fAD7A1;
+            --shadow: rgba(0,0,0,0.9);
+            --btn-copy: #2ecc71;
+            --border-bank: #fAD7A1;
+
+            /* Warna Background Overlay (Night) - Semua jadi Biru Malam/Navy */
+            --bg1-overlay: #1a1a3a;
+            --bg2-overlay: #16213e;
+            --bg3-overlay: #0f2440;
+            --bg4-overlay: #0a192f;
+            --bg5-overlay: #112240;
+            --bg6-overlay: #16213e;
+            --bg7-overlay: #0f2440;
+        }
+
+        body { font-family: 'Poppins', sans-serif; background: var(--bg-dark); display: flex; justify-content: center; overflow: hidden; color: var(--text-main); transition: background 0.5s ease, color 0.5s ease; }
         body.open { overflow: auto; }
 
         /* === MOBILE CONTAINER === */
-        #app { width: 100%; max-width: 414px; background: #fff; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5); overflow-x: hidden; }
+        #app { width: 100%; max-width: 414px; background: var(--app-bg); position: relative; box-shadow: 0 0 20px var(--shadow); overflow-x: hidden; transition: background 0.5s ease; }
 
-        .section-wrap { position: relative; background-size: cover; background-position: bottom center; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 0; overflow: hidden; }
+        /* The Magic Trick: Menggabungkan gambar siang dengan warna overlay gelap */
+        .section-wrap { position: relative; background-size: cover; background-position: bottom center; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 0; overflow: hidden; transition: background-color 0.8s ease; }
+        .dark-mode .section-wrap { background-blend-mode: multiply; }
 
-        /* BACKGROUND ASSETS */
-        .bg-1 { background-image: url('./assets/bg1.png'); background-color: #81d4fa; }
-        .bg-2 { background-image: url('./assets/background2.png'); background-color: #fAD7A1; } 
-        .bg-3 { background-image: url('./assets/bg3.png'); background-color: #aed6f1; }
-        .bg-4 { background-image: url('./assets/bg4.png'); background-color: #a3e4d7; }
-        .bg-5 { background-image: url('./assets/bg5.png'); background-color: #f5b7b1; }
-        .bg-6 { background-image: url('./assets/bg6.png'); background-color: #d7bde2; }
-        .bg-7 { background-image: url('./assets/bg3.png'); background-color: #ffccbc; }
+        /* BACKGROUND ASSETS DENGAN VARIABEL */
+        .bg-1 { background-image: url('./assets/bg1.png'); background-color: var(--bg1-overlay); }
+        .bg-2 { background-image: url('./assets/background2.png'); background-color: var(--bg2-overlay); } 
+        .bg-3 { background-image: url('./assets/bg3.png'); background-color: var(--bg3-overlay); }
+        .bg-4 { background-image: url('./assets/bg4.png'); background-color: var(--bg4-overlay); }
+        .bg-5 { background-image: url('./assets/bg5.png'); background-color: var(--bg5-overlay); }
+        .bg-6 { background-image: url('./assets/bg6.png'); background-color: var(--bg6-overlay); }
+        .bg-7 { background-image: url('./assets/bg3.png'); background-color: var(--bg7-overlay); }
 
-        /* === KERETA MARQUEE ZIG-ZAG === */
+        /* === KERETA MARQUEE ZIG-ZAG + LAMPU SOROT === */
         .section-train { position: absolute; bottom: 0; left: 0; width: 100%; height: 300px; overflow: hidden; z-index: 1; pointer-events: none; }
-        .section-train img { position: absolute; bottom: 0px; height: 300px; width: auto; opacity: 0; }
+        
+        .train-wrapper { position: absolute; bottom: 0px; height: 300px; width: auto; opacity: 0; display: flex; align-items: flex-end; }
+        .train-wrapper img { height: 300px; width: auto; display: block; transition: filter 0.8s ease; }
+        
+        /* Redupkan badan kereta di malam hari biar lampunya menonjol */
+        .dark-mode .train-wrapper img { filter: brightness(0.4) contrast(1.1); }
+
+        /* Lampu Sorot */
+        .headlight {
+            position: absolute; left: -180px; bottom: 40px; 
+            width: 200px; height: 120px; 
+            background: linear-gradient(to left, rgba(255, 255, 100, 0.9) 0%, rgba(255, 255, 0, 0.2) 60%, transparent 100%);
+            clip-path: polygon(100% 45%, 100% 55%, 0 100%, 0 0);
+            opacity: 0; transition: opacity 0.8s ease; filter: drop-shadow(0 0 15px rgba(255, 255, 0, 0.6));
+            z-index: -1;
+        }
+        .dark-mode .headlight { opacity: 1; }
 
         @keyframes trainR2L {
             0% { opacity: 0; left: 120%; transform: scaleX(1); }
@@ -53,24 +121,26 @@
             100% { opacity: 0; left: 120%; transform: scaleX(-1); }
         }
 
-        .train-sec-1 img { animation: trainR2L 40s infinite linear; animation-delay: 0s; }
-        .train-sec-2 img { animation: trainL2R 40s infinite linear; animation-delay: 8s; }
-        .train-sec-3 img { animation: trainR2L 40s infinite linear; animation-delay: 16s; }
-        .train-sec-4 img { animation: trainL2R 40s infinite linear; animation-delay: 24s; }
-        .train-sec-5 img { animation: trainR2L 40s infinite linear; animation-delay: 32s; }
+        .train-sec-1 .train-wrapper { animation: trainR2L 40s infinite linear; animation-delay: 0s; }
+        .train-sec-2 .train-wrapper { animation: trainL2R 40s infinite linear; animation-delay: 8s; }
+        .train-sec-3 .train-wrapper { animation: trainR2L 40s infinite linear; animation-delay: 16s; }
+        .train-sec-4 .train-wrapper { animation: trainL2R 40s infinite linear; animation-delay: 24s; }
+        .train-sec-5 .train-wrapper { animation: trainR2L 40s infinite linear; animation-delay: 32s; }
 
         /* === COVER PAGE === */
         #cover { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 414px; height: 100%; background: url('./assets/covergerak.mp4') no-repeat center/cover, #b3e5fc; display: flex; justify-content: center; align-items: center; flex-direction: column; z-index: 9999; text-align: center; transition: opacity 1s ease, visibility 1s; }
         #cover.hidden { opacity: 0; visibility: hidden; }
 
         /* === CARDS & TYPOGRAPHY === */
-        .card { background: rgba(255, 255, 255, 0.85); border-radius: 20px; padding: 30px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); backdrop-filter: blur(5px); width: 90%; max-width: 350px; text-align: center; position: relative; z-index: 5; }
+        .card { background: var(--card-bg); border-radius: 20px; padding: 30px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); backdrop-filter: blur(5px); width: 90%; max-width: 350px; text-align: center; position: relative; z-index: 5; transition: background 0.5s ease, color 0.5s ease; }
 
-        h1.title { font-family: 'More Sugar', 'More Sugar Thin', cursive; font-weight: 300; font-size: 3.5rem; color: #1a4b77; text-shadow: 2px 2px 4px rgba(255,255,255,0.8); line-height: 1.2; }
-        h2.subtitle { font-family: 'More Sugar', 'More Sugar Thin', cursive; font-weight: 300; color: #1a4b77; font-size: 2.2rem; margin-bottom: 10px; }
+        h1.title { font-family: 'More Sugar', 'More Sugar Thin', cursive; font-weight: 300; font-size: 3.5rem; color: var(--text-titles); text-shadow: 2px 2px 4px rgba(255,255,255,0.8); line-height: 1.2; transition: color 0.5s ease; }
+        .dark-mode h1.title { text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
         
-        .card p { color: #444; line-height: 1.6; margin-bottom: 8px; font-size: 0.95rem; }
-        .quote-text { font-style: italic; font-size: 1rem !important; color: #333 !important; line-height: 1.8 !important; }
+        h2.subtitle { font-family: 'More Sugar', 'More Sugar Thin', cursive; font-weight: 300; color: var(--text-titles); font-size: 2.2rem; margin-bottom: 10px; transition: color 0.5s ease; }
+        
+        .card p { color: var(--text-main); line-height: 1.6; margin-bottom: 8px; font-size: 0.95rem; transition: color 0.5s ease; }
+        .quote-text { font-style: italic; font-size: 1rem !important; color: var(--text-main) !important; line-height: 1.8 !important; }
 
         .btn { margin-top: 15px; padding: 12px 25px; border: none; border-radius: 25px; background: #e53935; color: white; font-size: 1rem; font-weight: bold; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 4px 10px rgba(229, 57, 53, 0.4); display: inline-block; text-decoration: none; transition: 0.3s; }
         .btn:disabled { background: #b0bec5; cursor: not-allowed; box-shadow: none; }
@@ -80,14 +150,19 @@
         input[readonly] { background-color: #e9ecef; color: #555; cursor: not-allowed; border: 1px dashed #aaa; }
         textarea:disabled { background-color: #e9ecef; cursor: not-allowed; } 
 
+        .dark-mode input[type="text"], .dark-mode textarea { background: #1a1a2e; color: #fff; border-color: #555; }
+        .dark-mode input[readonly], .dark-mode textarea:disabled { background: #111; color: #777; border-color: #333; }
+
         .rsvp-buttons { display: flex; gap: 10px; margin: 10px 0; }
         .rsvp-btn { flex: 1; padding: 12px 5px; border-radius: 10px; border: 2px solid #ccc; background: white; font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.3s ease; color: #555; }
+        .dark-mode .rsvp-btn { background: #1a1a2e; border-color: #555; color: #ccc; }
         .rsvp-btn.active-hadir { border-color: #27ae60; background: #27ae60; color: white; box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3); }
         .rsvp-btn.active-absen { border-color: #e74c3c; background: #e74c3c; color: white; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
         .rsvp-btn:disabled { background-color: #e9ecef; border-color: #ccc; color: #999; cursor: not-allowed; box-shadow: none; opacity: 0.7; }
+        .dark-mode .rsvp-btn:disabled { background-color: #111; border-color: #333; color: #555; }
 
-        .bank-box { background: #f4f9ff; padding: 15px; border-radius: 15px; margin-top: 10px; border: 1px dashed #1a4b77; }
-        .copy-btn { background: #27ae60; color: white; border: none; padding: 5px 15px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; margin-top: 8px; }
+        .bank-box { background: rgba(244, 249, 255, 0.1); padding: 15px; border-radius: 15px; margin-top: 10px; border: 1px dashed var(--border-bank); transition: border-color 0.5s ease; }
+        .copy-btn { background: var(--btn-copy); color: white; border: none; padding: 5px 15px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; margin-top: 8px; transition: background 0.5s ease; }
 
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .grid img { width: 100%; height: 130px; object-fit: cover; border-radius: 12px; cursor: pointer; transition: 0.2s ease-in-out; }
@@ -98,10 +173,11 @@
         .message-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding-bottom: 15px; scrollbar-width: none; -ms-overflow-style: none; }
         .message-slider::-webkit-scrollbar { display: none; }
         
-        .msg-item { flex: 0 0 85%; scroll-snap-align: center; background: #ffffff; padding: 15px; border-radius: 15px; text-align: left; border: 1px solid #e0e0e0; border-top: 5px solid #fAD7A1; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .msg-name { font-weight: bold; color: #1a4b77; font-size: 0.95rem; margin-bottom: 5px; }
-        .status-badge { font-size: 0.75rem; font-weight: normal; color: #666; margin-left: 5px; }
-        .msg-text { font-size: 0.85rem; color: #555; line-height: 1.5; font-style: italic; }
+        .msg-item { flex: 0 0 85%; scroll-snap-align: center; background: var(--app-bg); padding: 15px; border-radius: 15px; text-align: left; border: 1px solid #e0e0e0; border-top: 5px solid var(--text-titles); box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: background 0.5s ease; }
+        .dark-mode .msg-item { border-color: #333; }
+        .msg-name { font-weight: bold; color: var(--text-titles); font-size: 0.95rem; margin-bottom: 5px; }
+        .status-badge { font-size: 0.75rem; font-weight: normal; color: var(--text-main); margin-left: 5px; }
+        .msg-text { font-size: 0.85rem; color: var(--text-main); line-height: 1.5; font-style: italic; }
         .msg-date { font-size: 0.7rem; color: #999; margin-top: 8px; display: block; text-align: right;}
         
         .empty-msg { font-size: 0.9rem; color: #888; font-style: italic; width: 100%; text-align: center; padding: 20px 0; }
@@ -109,65 +185,69 @@
         .fade { opacity: 0; transform: translateY(40px); transition: 0.8s ease-out; }
         .fade.show { opacity: 1; transform: translateY(0); }
 
-        /* === FLOATING MUSIC BUTTON === */
+        /* === FLOATING BUTTONS (MUSIC & THEME) === */
         .music-btn { position: fixed; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.85); width: 45px; height: 45px; border-radius: 50%; display: none; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 9998; cursor: pointer; font-size: 1.2rem; animation: spin 3s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .music-btn.paused { animation-play-state: paused; }
-        @media (min-width: 414px) { .music-btn { right: calc(50% - 207px + 20px); } }
+        
+        .theme-btn { position: fixed; top: 20px; left: 20px; background: rgba(255, 255, 255, 0.85); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 9998; cursor: pointer; font-size: 1.2rem; transition: background 0.3s; }
+        .dark-mode .theme-btn { background: rgba(30, 30, 50, 0.85); color: #fff; }
+        .dark-mode .music-btn { background: rgba(30, 30, 50, 0.85); }
+
+        @media (min-width: 414px) { 
+            .music-btn { right: calc(50% - 207px + 20px); } 
+            .theme-btn { left: calc(50% - 207px + 20px); } 
+        }
 
         /* === FOOTER STYLES === */
         .custom-footer { text-align: center; padding: 15px 20px 25px; font-size: 0.85rem; color: #666; font-weight: 600; background: transparent; position: relative; z-index: 10; }
         .custom-footer span { color: #e53935; }
 
-        /* === LIGHTBOX STYLES (POP-UP FOTO) === */
-        #lightbox {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 10000; 
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden; transition: 0.3s;
-        }
+        /* === LIGHTBOX STYLES === */
+        #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s; }
         #lightbox.show { opacity: 1; visibility: visible; }
-        #lightbox img { 
-            max-width: 90%; max-height: 80vh; border-radius: 10px; 
-            border: 3px solid #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            transform: scale(0.8); transition: 0.3s ease-out; 
-        }
+        #lightbox img { max-width: 90%; max-height: 80vh; border-radius: 10px; border: 3px solid #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5); transform: scale(0.8); transition: 0.3s ease-out; }
         #lightbox.show img { transform: scale(1); }
         .close-lightbox { position: absolute; top: 20px; right: 25px; color: white; font-size: 2.5rem; cursor: pointer; font-weight: bold; }
 
         /* ========================================= */
-        /* CSS FACE REVEAL (MUNCUL DI TENGAH) */
+        /* CSS FACE REVEAL (LOGIC FIX: PASTI DI TENGAH, TIDAK NEMPEL) */
         /* ========================================= */
-        #confetti-container {
-            position: fixed; top: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 414px; height: 100vh;
-            pointer-events: none; z-index: 10001; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
+        #confetti-container { 
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 414px; height: 100vh; 
+            pointer-events: none; z-index: 10001; overflow: hidden; 
+            display: flex; justify-content: center; align-items: center; 
         }
 
-        .reveal-wrapper {
-            display: flex; flex-direction: column; align-items: center;
-            opacity: 0; transform: scale(0.5);
-            animation: revealPop 4s ease-out forwards;
+        /* Wrapper utama muncul membesar dari tengah */
+        .reveal-wrapper { 
+            opacity: 0; transform: scale(0.5); animation: revealPop 2.8s ease-out forwards; 
         }
 
-        .reveal-image {
-            max-width: 250px; max-height: 250px; 
+        /* Trik Flexbox biar Gak Nempel: Gambar atas, teks bawah, kasih Gap */
+        .reveal-content { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 15px; /* <--- INI KUNCI BIAR GAK NEMPEL: Jarak PASTI dagu ke teks */
+        }
+
+        /* Gambar Muka: Responsif & Selalu Proporsional */
+        .reveal-image { 
+            max-width: 250px; max-height: 250px; /* <--- Ukuran ideal di HP */
             height: auto; width: auto; object-fit: contain; 
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
-            margin-bottom: 10px;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); display: block; 
         }
 
+        /* Teks YAY/YAH: Playful & Tidak Absolut lagi */
         .reveal-text {
             font-family: 'More Sugar', 'More Sugar Thin', cursive;
             font-size: 3rem; text-shadow: 2px 2px 5px rgba(255,255,255,0.8);
             -webkit-text-stroke: 1px rgba(0,0,0,0.2); font-weight: bold;
+            white-space: nowrap; 
         }
+        .dark-mode .reveal-text { text-shadow: 2px 2px 10px rgba(0,0,0,0.9); }
 
-        .extra-particle {
-            position: absolute; top: -50px; opacity: 0;
-            animation: particleFall linear forwards;
-        }
+        .extra-particle { position: absolute; top: -50px; opacity: 0; animation: particleFall linear forwards; }
 
         @keyframes revealPop {
             0% { opacity: 0; transform: scale(0.5); }
@@ -196,6 +276,7 @@
         <source src="./assets/trim.mp3" type="audio/mpeg">
     </audio>
 
+    <div class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</div>
     <div class="music-btn" id="musicBtn" onclick="toggleMusic()">🎵</div>
 
     <div id="confetti-container"></div>
@@ -219,9 +300,14 @@
         <div class="section-wrap bg-1">
             <div class="card fade">
                 <h1 class="title">Arshaka's Birthday</h1>
-                <p style="font-size: 1.2rem; font-weight: 600; color: #1a4b77; margin-top: 10px;">All aboard! 🚂</p>
+                <p style="font-size: 1.2rem; font-weight: 600; color: var(--text-titles); margin-top: 10px;">All aboard! 🚂</p>
             </div>
-            <div class="section-train train-sec-1"><img src="./assets/keretazaid.png" alt="Kereta Arshaka 1"></div>
+            <div class="section-train train-sec-1">
+                <div class="train-wrapper">
+                    <div class="headlight"></div>
+                    <img src="./assets/keretazaid.png" alt="Kereta Arshaka 1">
+                </div>
+            </div>
         </div>
 
         <div class="section-wrap bg-2" style="justify-content: center; padding-top: 60px;">
@@ -234,16 +320,21 @@
                     “All aboard! Nggak kerasa kereta perjalanan Arshaka udah sampai di stasiun umur 3 tahun! Tumbuh jadi anak yang sholeh, sehat terus, dan terus melaju kejar mimpimu ya, Nak. Ayah dan Mama akan selalu ada di gerbong terdepan buatmu."
                 </p>
             </div>
-            <div class="section-train train-sec-2"><img src="./assets/keretazaid.png" alt="Kereta Arshaka 2"></div>
+            <div class="section-train train-sec-2">
+                <div class="train-wrapper">
+                    <div class="headlight"></div>
+                    <img src="./assets/keretazaid.png" alt="Kereta Arshaka 2">
+                </div>
+            </div>
         </div>
 
         <div class="section-wrap bg-4">
             <div class="card fade">
                 <h2 class="subtitle">Event Detail</h2>
                 
-                <div style="background: rgba(255,255,255,0.9); border: 2px dashed #a3e4d7; border-radius: 15px; padding: 15px; margin: 15px 0;">
-                    <p style="font-size: 1rem; margin-bottom: 0; color: #555; text-transform: uppercase; font-weight: 600;">Minggu</p>
-                    <h1 id="animatedDate" style="font-size: 4.5rem; color: #1a4b77; line-height: 1; margin: 5px 0;">1</h1>
+                <div style="background: var(--card-bg); border: 2px dashed #a3e4d7; border-radius: 15px; padding: 15px; margin: 15px 0;">
+                    <p style="font-size: 1rem; margin-bottom: 0; color: var(--text-main); text-transform: uppercase; font-weight: 600;">Minggu</p>
+                    <h1 id="animatedDate" style="font-size: 4.5rem; color: var(--text-titles); line-height: 1; margin: 5px 0;">1</h1>
                     <p style="font-size: 1.2rem; font-weight: bold; margin-bottom: 0; color: #e53935;">Mei 2026</p>
                 </div>
 
@@ -253,7 +344,12 @@
                 
                 <a href="https://www.google.com/maps/search/?api=1&query=KFC+Sunter+Mall+Jakarta+Utara" target="_blank" class="btn" style="background: #2980b9; margin-top: 15px; width: 100%;">🗺️ Buka Peta Google Maps</a>
             </div>
-            <div class="section-train train-sec-3"><img src="./assets/keretazaid.png" alt="Kereta Arshaka 3"></div>
+            <div class="section-train train-sec-3">
+                <div class="train-wrapper">
+                    <div class="headlight"></div>
+                    <img src="./assets/keretazaid.png" alt="Kereta Arshaka 3">
+                </div>
+            </div>
         </div>
 
         <div class="section-wrap bg-5">
@@ -267,7 +363,12 @@
                     <img src="./assets/foto4.jpeg" alt="Foto 4" onclick="openLightbox(this.src)">
                 </div>
             </div>
-            <div class="section-train train-sec-4"><img src="./assets/keretazaid.png" alt="Kereta Arshaka 4"></div>
+            <div class="section-train train-sec-4">
+                <div class="train-wrapper">
+                    <div class="headlight"></div>
+                    <img src="./assets/keretazaid.png" alt="Kereta Arshaka 4">
+                </div>
+            </div>
         </div>
 
         <div class="section-wrap bg-7" style="justify-content: flex-start; padding-top: 60px; padding-bottom: 60px;">
@@ -300,7 +401,7 @@
                 <p>Kalau memberi kado adalah ungkapan tanda sayang Teman-teman, Uncle/Aunty, bisa kirim kado online buat Arshaka lewat sini yaa... 🎁</p>
                 <div class="bank-box" style="text-align: left; padding: 15px;">
                     <p style="margin-bottom: 5px;"><strong>Penerima: Riska</strong></p>
-                    <p id="alamat-kado" style="font-size: 0.9rem; color: #444; line-height: 1.6; margin-bottom: 10px;">
+                    <p id="alamat-kado" style="font-size: 0.9rem; color: var(--text-main); line-height: 1.6; margin-bottom: 10px;">
                         Jalan Budi Mulia RT 02 RW 04 No.4D<br>
                         Pademangan Barat, Jakarta Utara<br>
                         14420
@@ -310,11 +411,16 @@
             </div>
 
             <div class="card fade" style="text-align: center; margin-top: 10px; position: relative; z-index: 5;">
-                <h1 class="title" style="font-size: 2.8rem; color: #1a4b77;">Aku tunggu kedatanganmu ya!</h1>
-                <p style="font-weight: bold; margin-top: 10px; color: #1a4b77; font-size: 1.1rem;">Salam Hangat,<br>Arshaka</p>
+                <h1 class="title" style="font-size: 2.8rem;">Aku tunggu kedatanganmu ya!</h1>
+                <p style="font-weight: bold; margin-top: 10px; color: var(--text-titles); font-size: 1.1rem;">Salam Hangat,<br>Arshaka</p>
             </div>
             
-            <div class="section-train train-sec-5"><img src="./assets/keretazaid.png" alt="Kereta Arshaka 5"></div>
+            <div class="section-train train-sec-5">
+                <div class="train-wrapper">
+                    <div class="headlight"></div>
+                    <img src="./assets/keretazaid.png" alt="Kereta Arshaka 5">
+                </div>
+            </div>
         </div>
 
         <div class="custom-footer">
@@ -329,7 +435,22 @@
     </div>
 
     <script>
-        // 1. UBAH NAMA TAMU & KUNCI FORM INPUT
+        // === LOGIKA TEMA (SELALU DEFAULT DAY MODE SAAT REFRESH/LOAD) ===
+        function toggleTheme() {
+            const body = document.documentElement; 
+            const themeBtn = document.getElementById('themeBtn');
+            const isDark = document.body.classList.contains('dark-mode');
+            
+            if (isDark) {
+                document.body.classList.remove('dark-mode');
+                themeBtn.innerText = '☀️';
+            } else {
+                document.body.classList.add('dark-mode');
+                themeBtn.innerText = '🌙';
+            }
+        }
+
+        // === LOGIKA NAMA TAMU & KUNCI FORM ===
         let currentGuestName = "Tamu Spesial";
         try {
             const urlParams = new URLSearchParams(window.location.search);
@@ -352,9 +473,7 @@
             console.error("Gagal membaca link URL: ", err);
         }
 
-        // ===========================================
-        // FUNGSI PILIH KEHADIRAN & TRIGGER REVEAL
-        // ===========================================
+        // === LOGIKA PILIH KEHADIRAN & TRIGGER REVEAL ===
         function pilihKehadiran(status, el) {
             if (document.getElementById('statusKehadiran').disabled) return; 
             
@@ -365,7 +484,6 @@
             if (status === 'Hadir') { el.classList.add('active-hadir'); } 
             else { el.classList.add('active-absen'); }
 
-            // PANGGIL ANIMASI LANGSUNG SAAT TOMBOL DIKLIK
             launchFaceReveal(status);
         }
 
@@ -380,7 +498,7 @@
             btn.style.background = "#27ae60"; 
         }
 
-        // 2. KONFIGURASI SUPABASE ASLI
+        // === KONFIGURASI SUPABASE ASLI ===
         const SUPABASE_URL = 'https://vdzosmokdksoashrzsii.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_LSA1BJTuli1c5P4kHXAE3g_uaGYujnR';
         let supabaseClient = null;
@@ -394,7 +512,7 @@
             }
         } catch (error) { console.error("Gagal init Supabase:", error); }
 
-        // 3. LOGIKA UI
+        // === LOGIKA UI ===
         const music = document.getElementById("bgMusic");
         const voiceIntro = document.getElementById("voiceIntro");
         const musicBtn = document.getElementById("musicBtn");
@@ -439,9 +557,7 @@
             document.getElementById('lightbox').classList.remove('show');
         }
 
-        // ===========================================
-        // FUNGSI JAVASCRIPT FACE REVEAL
-        // ===========================================
+        // === FUNGSI JAVASCRIPT FACE REVEAL (LOGIC TEKS FLEXBOX & PASTI JAUH/GA NEMPEL) ===
         let revealTimeout;
 
         function launchFaceReveal(status) {
@@ -449,34 +565,56 @@
             container.innerHTML = '';
             clearTimeout(revealTimeout);
 
+            // 1. Create Wrapper Utama
             const wrapper = document.createElement('div');
             wrapper.className = 'reveal-wrapper';
 
+            // 2. Create Content Container (Flexbox)
+            const content = document.createElement('div');
+            content.className = 'reveal-content';
+
+            // 3. Create Image
             const img = document.createElement('img');
             img.className = 'reveal-image';
             
+            // 4. Create Text
             const text = document.createElement('span');
             text.className = 'reveal-text';
 
             if (status === 'Hadir') {
                 img.src = './assets/zaidsenang.png';
+                // Ukuran ideal (Anti Gepeng)
+                img.style.maxWidth = '250px';
+                img.style.maxHeight = '250px';
+
                 text.innerText = 'YAAAYYY!';
                 text.style.color = '#27ae60'; 
                 createFallingParticles('confetti', container, 20); 
             } else {
                 img.src = './assets/zaidmurung.png';
+                // Ukuran proporsional sedih (Anti Gepeng & Gak Kegedean)
+                img.style.maxWidth = '200px';
+                img.style.maxHeight = '320px';
+
                 text.innerText = 'YAHHHH :(';
                 text.style.color = '#e74c3c'; 
                 createFallingParticles('heartbreak', container, 15);
             }
 
-            wrapper.appendChild(img);
-            wrapper.appendChild(text);
+            // Masukin image dan text ke content container
+            content.appendChild(img);
+            content.appendChild(text);
+
+            // Masukin content container ke wrapper utama
+            wrapper.appendChild(content);
+
+            // Masukin wrapper utama ke container di body
             container.appendChild(wrapper);
 
+            // Bersihin total element-nya setelah 5 detik 
             revealTimeout = setTimeout(() => {
                 container.innerHTML = '';
-            }, 5000);
+            }, 3000);
         }
 
         function createFallingParticles(type, container, num) {
@@ -500,7 +638,7 @@
             }
         }
 
-        // 5. FUNGSI DATABASE (BACA & TULIS)
+        // === FUNGSI DATABASE (BACA & TULIS) ===
         async function fetchMessages() {
             if (!supabaseClient) return;
             const board = document.getElementById('messageBoard');
@@ -586,7 +724,7 @@
             }
         });
 
-        // 6. ANIMASI FADE SCROLL
+        // === ANIMASI FADE SCROLL ===
         let hasCounted = false; 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
