@@ -274,7 +274,7 @@
             
             <div class="card fade" style="margin-bottom: 25px;">
                 <h2 class="subtitle">Ucapkan Sesuatu Yuk!</h2>
-                <p style="font-size: 0.8rem; color: #777;">Kabari aku ya jika Uncle & Aunty bisa hadir!</p>
+                <p style="font-size: 0.8rem; color: #777;">Kabari aku ya jika Teman-teman, Uncle/Aunty bisa hadir!</p>
                 <form id="formUcapan">
                     <input type="text" id="namaPengirim" placeholder="Nama Anda" readonly required>
                     
@@ -297,7 +297,7 @@
 
             <div class="card fade" style="margin-bottom: 25px;">
                 <h2 class="subtitle">Kirim Kado 🎁</h2>
-                <p>Kalau memberi kado adalah ungkapan tanda sayang Uncle dan Aunty, Uncle dan Aunty bisa kirim kado online buat Arshaka lewat sini yaa... 🎁</p>
+                <p>Kalau memberi kado adalah ungkapan tanda sayang Teman-teman, Uncle/Aunty, bisa kirim kado online buat Arshaka lewat sini yaa... 🎁</p>
                 <div class="bank-box" style="text-align: left; padding: 15px;">
                     <p style="margin-bottom: 5px;"><strong>Penerima: Riska</strong></p>
                     <p id="alamat-kado" style="font-size: 0.9rem; color: #444; line-height: 1.6; margin-bottom: 10px;">
@@ -442,12 +442,12 @@
         // ===========================================
         // FUNGSI JAVASCRIPT FACE REVEAL
         // ===========================================
-        let revealTimeout; // Variabel global buat nahan timer
+        let revealTimeout;
 
         function launchFaceReveal(status) {
             const container = document.getElementById('confetti-container');
-            container.innerHTML = ''; // Bersihin sisa-sisa kalau user klik berkali-kali
-            clearTimeout(revealTimeout); // Reset timer pembersihan
+            container.innerHTML = '';
+            clearTimeout(revealTimeout);
 
             const wrapper = document.createElement('div');
             wrapper.className = 'reveal-wrapper';
@@ -474,7 +474,6 @@
             wrapper.appendChild(text);
             container.appendChild(wrapper);
 
-            // Bersihin element-nya setelah 5 detik 
             revealTimeout = setTimeout(() => {
                 container.innerHTML = '';
             }, 5000);
@@ -551,7 +550,7 @@
             const pesanInput = document.getElementById('pesanUcapan').value;
 
             if (!kehadiranInput) {
-                alert('Pilih kehadiran dulu ya Uncle/Aunty! Klik tombol "Aku hadiirr" atau "Aku gak bisa hadir :("');
+                alert('Pilih kehadiran dulu ya Teman-teman, Uncle/Aunty! Klik tombol "Aku hadiirr" atau "Aku gak bisa hadir :("');
                 return;
             }
 
@@ -576,9 +575,7 @@
 
                 if (error) throw error;
 
-                // (FUNGSI REVEAL DIHAPUS DARI SINI KARENA UDAH PINDAH KE KLIK TOMBOL)
-
-                alert('Terima kasih konfirmasinya! Ucapan berhasil ditambahkan.');
+                alert('Terima kasih yaa konfirmasinya! Ucapan berhasil ditambahkan.');
                 localStorage.setItem('rsvp_arshaka_' + currentGuestName, 'true');
                 kunciFormUcapan();
                 fetchMessages(); 
