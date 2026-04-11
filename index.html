@@ -85,6 +85,71 @@
         .bg-6 { background-image: url('./assets/bg6.png'); background-color: var(--bg6-overlay); }
         .bg-7 { background-image: url('./assets/bg3.png'); background-color: var(--bg7-overlay); }
 
+        /* ======================================================= */
+        /* === BINTANG KELAP-KELIP (HANYA DI AREA LANGIT ATAS) === */
+        /* ======================================================= */
+        .sky-container {
+            position: absolute; top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            pointer-events: none; z-index: 0; /* Di bawah kereta dan kartu */
+            opacity: 0; transition: opacity 1.5s ease; 
+        }
+        .dark-mode .sky-container { opacity: 1; }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.6);
+            animation: twinkle ease-in-out infinite alternate; 
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.1; transform: scale(0.6); }
+            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.9); }
+        }
+
+        /* ======================================================= */
+        /* === BINTANG JATUH INTERAKTIF FIX (HANYA DI AREA MOBILE) === */
+        /* ======================================================= */
+        #shooting-stars-container {
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 414px; height: 100vh; 
+            pointer-events: none; z-index: 9998; overflow: hidden; 
+        }
+        .shooting-star {
+            position: absolute; 
+            width: 2px; height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.8);
+            pointer-events: none; 
+            animation: shoot 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .shooting-star::before {
+            content: ''; position: absolute;
+            top: 50%; transform: translateY(-50%);
+            width: 60px; /* Panjang ekor cahaya */
+            height: 1px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.9), transparent);
+        }
+        @keyframes shoot {
+            0% { transform: translate(0, 0) rotate(45deg) scale(1); opacity: 1; }
+            100% { transform: translate(150px, 150px) rotate(45deg) scale(0); opacity: 0; }
+        }
+
+        /* ======================================================= */
+        /* === PAPAN COUNTDOWN (HITUNG MUNDUR) === */
+        /* ======================================================= */
+        .countdown-wrapper { margin-top: 15px; }
+        .countdown-title { font-size: 0.85rem; font-weight: bold; color: var(--text-titles); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; transition: color 0.5s ease; }
+        .countdown-container { display: flex; justify-content: center; gap: 8px; }
+        .cd-box { background: #1a4b77; color: #fff; padding: 10px 5px; border-radius: 8px; width: 60px; text-align: center; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.3), 0 4px 6px rgba(0,0,0,0.1); transition: background 0.5s ease, color 0.5s ease; }
+        .dark-mode .cd-box { background: #fAD7A1; color: #1a1a3a; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.3); }
+        .cd-time { font-size: 1.6rem; font-weight: bold; font-family: 'Poppins', sans-serif; line-height: 1; }
+        .cd-label { font-size: 0.6rem; text-transform: uppercase; margin-top: 4px; opacity: 0.9; }
+
+
         /* === KERETA MARQUEE ZIG-ZAG + LAMPU SOROT === */
         .section-train { position: absolute; bottom: 0; left: 0; width: 100%; height: 300px; overflow: hidden; z-index: 1; pointer-events: none; }
         
@@ -94,7 +159,7 @@
         /* Redupkan badan kereta di malam hari biar lampunya menonjol */
         .dark-mode .train-wrapper img { filter: brightness(0.4) contrast(1.1); }
 
-        /* Lampu Sorot */
+        /* Lampu Sorot Default */
         .headlight {
             position: absolute; left: -180px; bottom: 40px; 
             width: 200px; height: 120px; 
@@ -105,27 +170,38 @@
         }
         .dark-mode .headlight { opacity: 1; }
 
+        /* KHUSUS SECTION TERAKHIR (BG-7): KERETA & LAMPU DIPERBESAR */
+        .train-sec-5 { height: 420px; }
+        .train-sec-5 .train-wrapper { height: 420px; }
+        .train-sec-5 .train-wrapper img { height: 420px; }
+        .train-sec-5 .headlight {
+            left: -250px; /* Geser lebih ke depan karena moncong membesar */
+            bottom: 55px; /* Naik dikit menyesuaikan rel */
+            width: 280px; /* Sorotan lebih panjang */
+            height: 160px; /* Sorotan lebih lebar */
+        }
+
         @keyframes trainR2L {
-            0% { opacity: 0; left: 120%; transform: scaleX(1); }
-            1% { opacity: 1; left: 120%; transform: scaleX(1); }
-            19% { opacity: 1; left: -100%; transform: scaleX(1); }
-            20% { opacity: 0; left: -100%; transform: scaleX(1); }
-            100% { opacity: 0; left: -100%; transform: scaleX(1); }
+            0% { opacity: 0; left: 150%; transform: scaleX(1); }
+            1% { opacity: 1; left: 150%; transform: scaleX(1); }
+            19% { opacity: 1; left: -150%; transform: scaleX(1); }
+            20% { opacity: 0; left: -150%; transform: scaleX(1); }
+            100% { opacity: 0; left: -150%; transform: scaleX(1); }
         }
 
         @keyframes trainL2R {
-            0% { opacity: 0; left: -100%; transform: scaleX(-1); }
-            1% { opacity: 1; left: -100%; transform: scaleX(-1); }
-            19% { opacity: 1; left: 120%; transform: scaleX(-1); }
-            20% { opacity: 0; left: 120%; transform: scaleX(-1); }
-            100% { opacity: 0; left: 120%; transform: scaleX(-1); }
+            0% { opacity: 0; left: -150%; transform: scaleX(-1); }
+            1% { opacity: 1; left: -150%; transform: scaleX(-1); }
+            19% { opacity: 1; left: 150%; transform: scaleX(-1); }
+            20% { opacity: 0; left: 150%; transform: scaleX(-1); }
+            100% { opacity: 0; left: 150%; transform: scaleX(-1); }
         }
 
-        .train-sec-1 .train-wrapper { animation: trainR2L 40s infinite linear; animation-delay: 0s; }
-        .train-sec-2 .train-wrapper { animation: trainL2R 40s infinite linear; animation-delay: 8s; }
-        .train-sec-3 .train-wrapper { animation: trainR2L 40s infinite linear; animation-delay: 16s; }
-        .train-sec-4 .train-wrapper { animation: trainL2R 40s infinite linear; animation-delay: 24s; }
-        .train-sec-5 .train-wrapper { animation: trainR2L 40s infinite linear; animation-delay: 32s; }
+        .train-sec-1 .train-wrapper { animation: trainR2L 60s infinite linear; animation-delay: 0s; }
+        .train-sec-2 .train-wrapper { animation: trainL2R 60s infinite linear; animation-delay: 8s; }
+        .train-sec-3 .train-wrapper { animation: trainR2L 60s infinite linear; animation-delay: 16s; }
+        .train-sec-4 .train-wrapper { animation: trainL2R 60s infinite linear; animation-delay: 24s; }
+        .train-sec-5 .train-wrapper { animation: trainR2L 60s infinite linear; animation-delay: 32s; }
 
         /* === COVER PAGE === */
         #cover { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 414px; height: 100%; background: url('./assets/covergerak.mp4') no-repeat center/cover, #b3e5fc; display: flex; justify-content: center; align-items: center; flex-direction: column; z-index: 9999; text-align: center; transition: opacity 1s ease, visibility 1s; }
@@ -220,25 +296,21 @@
             display: flex; justify-content: center; align-items: center; 
         }
 
-        /* Wrapper utama muncul membesar dari tengah */
         .reveal-wrapper { 
             opacity: 0; transform: scale(0.5); animation: revealPop 2.8s ease-out forwards; 
         }
 
-        /* Trik Flexbox biar Gak Nempel: Gambar atas, teks bawah, kasih Gap */
         .reveal-content { 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 15px; /* <--- INI KUNCI BIAR GAK NEMPEL: Jarak PASTI dagu ke teks */
+            gap: 15px; 
         }
 
-        /* Gambar Muka: Responsif & Selalu Proporsional */
         .reveal-image { 
-            max-width: 250px; max-height: 250px; /* <--- Ukuran ideal di HP */
+            max-width: 250px; max-height: 250px; 
             height: auto; width: auto; object-fit: contain; 
             filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); display: block; 
         }
 
-        /* Teks YAY/YAH: Playful & Tidak Absolut lagi */
         .reveal-text {
             font-family: 'More Sugar', 'More Sugar Thin', cursive;
             font-size: 3rem; text-shadow: 2px 2px 5px rgba(255,255,255,0.8);
@@ -278,6 +350,8 @@
 
     <div class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</div>
     <div class="music-btn" id="musicBtn" onclick="toggleMusic()">🎵</div>
+
+    <div id="shooting-stars-container"></div>
 
     <div id="confetti-container"></div>
 
@@ -334,7 +408,7 @@
                 
                 <div style="background: var(--card-bg); border: 2px dashed #a3e4d7; border-radius: 15px; padding: 15px; margin: 15px 0;">
                     <p style="font-size: 1rem; margin-bottom: 0; color: var(--text-main); text-transform: uppercase; font-weight: 600;">Minggu</p>
-                    <h1 id="animatedDate" style="font-size: 4.5rem; color: var(--text-titles); line-height: 1; margin: 5px 0;">1</h1>
+                    <h1 id="animatedDate" style="font-size: 4.5rem; color: var(--text-titles); line-height: 1; margin: 5px 0;">10</h1>
                     <p style="font-size: 1.2rem; font-weight: bold; margin-bottom: 0; color: #e53935;">Mei 2026</p>
                 </div>
 
@@ -342,6 +416,16 @@
                 <p style="margin-top: 10px;">📍 <strong>KFC Sunter Mall</strong><br><small>Jakarta Utara</small></p>
                 <p style="margin-top: 10px;"><strong>Dress Code:</strong><br><small>Cream!</small></p>
                 
+                <div class="countdown-wrapper">
+                    <div class="countdown-title">Kereta Berangkat Dalam:</div>
+                    <div class="countdown-container">
+                        <div class="cd-box"><div class="cd-time" id="cd-hari">00</div><div class="cd-label">Hari</div></div>
+                        <div class="cd-box"><div class="cd-time" id="cd-jam">00</div><div class="cd-label">Jam</div></div>
+                        <div class="cd-box"><div class="cd-time" id="cd-menit">00</div><div class="cd-label">Menit</div></div>
+                        <div class="cd-box"><div class="cd-time" id="cd-detik">00</div><div class="cd-label">Detik</div></div>
+                    </div>
+                </div>
+
                 <a href="https://www.google.com/maps/search/?api=1&query=KFC+Sunter+Mall+Jakarta+Utara" target="_blank" class="btn" style="background: #2980b9; margin-top: 15px; width: 100%;">🗺️ Buka Peta Google Maps</a>
             </div>
             <div class="section-train train-sec-3">
@@ -435,6 +519,107 @@
     </div>
 
     <script>
+        // === LOGIKA COUNTDOWN STASIUN ===
+        // Set tanggal acara Arshaka (10 Mei 2026, Jam 16:00 WIB)
+        const eventDate = new Date("May 10, 2026 16:00:00").getTime();
+        
+        const countdownTimer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            if (distance < 0) {
+                clearInterval(countdownTimer);
+                document.getElementById("cd-hari").innerText = "00";
+                document.getElementById("cd-jam").innerText = "00";
+                document.getElementById("cd-menit").innerText = "00";
+                document.getElementById("cd-detik").innerText = "00";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("cd-hari").innerText = days.toString().padStart(2, '0');
+            document.getElementById("cd-jam").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("cd-menit").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("cd-detik").innerText = seconds.toString().padStart(2, '0');
+        }, 1000);
+
+        // === LOGIKA BINTANG JATUH (SHOOTING STARS) FIX: DIDALAM CONTAINER MOBILE ===
+        function spawnShootingStar(x, y) {
+            const container = document.getElementById('shooting-stars-container');
+            if (!container) return;
+
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            
+            // Dapatkan ukuran wadah mobile (max-width: 414px)
+            const rect = container.getBoundingClientRect();
+            
+            // Hitung posisi relatif terhadap container (bukan terhadap browser full)
+            const posX = x !== undefined ? (x - rect.left) : (Math.random() * rect.width);
+            const posY = y !== undefined ? (y - rect.top) : (Math.random() * (rect.height / 2));
+            
+            star.style.left = posX + 'px';
+            star.style.top = posY + 'px';
+            
+            container.appendChild(star);
+
+            setTimeout(() => {
+                star.remove();
+            }, 800);
+        }
+
+        // Bintang Jatuh Interaktif (Klik)
+        document.addEventListener('click', function(e) {
+            if (!document.body.classList.contains('dark-mode')) return;
+            if (e.target.closest('button') || e.target.closest('input') || e.target.closest('textarea') || e.target.closest('.card')) return;
+            
+            spawnShootingStar(e.clientX, e.clientY);
+        });
+
+        // Bintang Jatuh Otomatis tiap 3.5 detik
+        setInterval(() => {
+            if (document.body.classList.contains('dark-mode')) {
+                spawnShootingStar();
+            }
+        }, 3500);
+
+        // === LOGIKA RENDER BINTANG KELAP KELIP PER SECTION (DI LANGIT SAJA) ===
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section-wrap');
+            
+            sections.forEach(section => {
+                const sky = document.createElement('div');
+                sky.className = 'sky-container';
+                section.appendChild(sky);
+
+                const numStars = 25; 
+
+                for (let i = 0; i < numStars; i++) {
+                    let star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 45 + '%';
+                    
+                    const size = (Math.random() * 2 + 1) + 'px';
+                    star.style.width = size;
+                    star.style.height = size;
+
+                    const blinkDuration = (Math.random() * 3 + 1) + 's'; 
+                    star.style.animationDuration = blinkDuration;
+                    
+                    const blinkDelay = '-' + (Math.random() * 5) + 's';
+                    star.style.animationDelay = blinkDelay;
+                    
+                    sky.appendChild(star);
+                }
+            });
+        });
+
         // === LOGIKA TEMA (SELALU DEFAULT DAY MODE SAAT REFRESH/LOAD) ===
         function toggleTheme() {
             const body = document.documentElement; 
@@ -557,7 +742,7 @@
             document.getElementById('lightbox').classList.remove('show');
         }
 
-        // === FUNGSI JAVASCRIPT FACE REVEAL (LOGIC TEKS FLEXBOX & PASTI JAUH/GA NEMPEL) ===
+        // === FUNGSI JAVASCRIPT FACE REVEAL ===
         let revealTimeout;
 
         function launchFaceReveal(status) {
@@ -565,25 +750,20 @@
             container.innerHTML = '';
             clearTimeout(revealTimeout);
 
-            // 1. Create Wrapper Utama
             const wrapper = document.createElement('div');
             wrapper.className = 'reveal-wrapper';
 
-            // 2. Create Content Container (Flexbox)
             const content = document.createElement('div');
             content.className = 'reveal-content';
 
-            // 3. Create Image
             const img = document.createElement('img');
             img.className = 'reveal-image';
             
-            // 4. Create Text
             const text = document.createElement('span');
             text.className = 'reveal-text';
 
             if (status === 'Hadir') {
                 img.src = './assets/zaidsenang.png';
-                // Ukuran ideal (Anti Gepeng)
                 img.style.maxWidth = '250px';
                 img.style.maxHeight = '250px';
 
@@ -592,7 +772,6 @@
                 createFallingParticles('confetti', container, 20); 
             } else {
                 img.src = './assets/zaidmurung.png';
-                // Ukuran proporsional sedih (Anti Gepeng & Gak Kegedean)
                 img.style.maxWidth = '200px';
                 img.style.maxHeight = '320px';
 
@@ -601,17 +780,11 @@
                 createFallingParticles('heartbreak', container, 15);
             }
 
-            // Masukin image dan text ke content container
             content.appendChild(img);
             content.appendChild(text);
-
-            // Masukin content container ke wrapper utama
             wrapper.appendChild(content);
-
-            // Masukin wrapper utama ke container di body
             container.appendChild(wrapper);
 
-            // Bersihin total element-nya setelah 5 detik 
             revealTimeout = setTimeout(() => {
                 container.innerHTML = '';
             }, 3000);
